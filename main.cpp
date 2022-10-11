@@ -72,62 +72,9 @@ int main(void)
         if (playerCellY < 0) playerCellY = 0;
         else if (playerCellY >= cubicmap.height) playerCellY = cubicmap.height - 1;
 
-        // Check map collisions using image data and player position
-        // TODO: Improvement: Just check player surrounding cells for collision
-        for (int y = 0; y < cubicmap.height; y++)
-        {
-            for (int x = 0; x < cubicmap.width; x++)
-            {
-                if ((mapPixels[y*cubicmap.width + x].r == 255) &&       // Collision: white pixel, only check R channel
-                    (CheckCollisionCircleRec(playerPos, playerRadius,
-                    (Rectangle){ mapPosition.x - 0.5f + x*1.0f, mapPosition.z - 0.5f + y*1.0f, 1.0f, 1.0f })))
-                {
-                    // Collision detected, reset camera position
-                    camera.position = oldCamPos;
-                }
-            }
-        }
-        //----------------------------------------------------------------------------------
-
-        // Draw
-        //----------------------------------------------------------------------------------
-        
-        BeginDrawing();
-
-            ClearBackground(RAYWHITE);
-
-            BeginMode3D(camera);
-                DrawModel(model, mapPosition, 1.0f, WHITE);                     // Draw maze map
-            EndMode3D();
-
-            // DrawTextureEx(cubicmap, (Vector2){ GetScreenWidth() - cubicmap.width*4.0f - 20, 20.0f }, 0.0f, 4.0f, WHITE);
-            // DrawRectangleLines(GetScreenWidth() - cubicmap.width*4 - 20, 20, cubicmap.width*4, cubicmap.height*4, GREEN);
-
-            // Draw player position radar
-            // DrawRectangle(GetScreenWidth() - cubicmap.width*4 - 20 + playerCellX*4, 20 + playerCellY*4, 4, 4, RED);
-
-            DrawText(TextFormat("TIME: %.02f", (float)framesCounter/60), 800, 50, 50, BLUE);
-
-
-            // DrawFPS(10, 10);
-            
-            
-
-        EndDrawing();
-        //----------------------------------------------------------------------------------
-    }
-
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    UnloadImageColors(mapPixels);   // Unload color array
-
-    UnloadTexture(cubicmap);        // Unload cubicmap texture
-    UnloadTexture(texture);         // Unload map texture
-    UnloadModel(model);             // Unload map model
-
-    CloseWindow();                  // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
-
+int main()
+{
+    printf("Mateo est un con");
     return 0;
 }
 
