@@ -23,7 +23,7 @@ int main(void)
     // Define the camera to look into our 3d world
     Camera camera = { { 0.2f, 0.4f, 0.2f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, 45.0f, 0 };
 
-    Image imMap = LoadImage("map_simple.png");      // Load cubicmap image (RAM)
+    Image imMap = LoadImage("Test.png");      // Load cubicmap image (RAM)
     Texture2D cubicmap = LoadTextureFromImage(imMap);       // Convert image to texture to display (VRAM)
     Mesh mesh = GenMeshCubicmap(imMap, (Vector3){ 1.0f, 1.0f, 1.0f });
     Model model = LoadModelFromMesh(mesh);
@@ -35,6 +35,21 @@ int main(void)
     // Get map image data to be used for collision detection
     Color *mapPixels = LoadImageColors(imMap);
     UnloadImage(imMap);             // Unload image from RAM
+
+    Texture2D Personnage = LoadTexture("main_boussole.png"); // Load person
+
+    int frameWidth = Personnage.width/6;
+    int frameHeight = Personnage.height;
+
+    // On charge de la texture pour créer le visuel de l'image 
+    Rectangle sourceRect = Rectangle(0.0f, 0.0f, frameWidth, frameHeight);  
+
+    // Position de l'image sur l'écran
+    Rectangle targetRect = { screenWidth/2.0f, screenHeight/2.0f, frameWidth*2.0f, frameHeight*2.0f };
+
+    Vector2 origin = { (float)frameWidth, (float)frameHeight };
+
+
 
     Vector3 mapPosition = { -cubicmap.width/2 -3 , 0.0f, -cubicmap.height/2  };  // Set model position
 
@@ -78,7 +93,7 @@ int main(void)
         {
             for (int x = 0; x < cubicmap.width; x++)
             {
-                if ((mapPixels[y*cubicmap.width + x].r == 255) &&       // Collision: white pixel, only check R channel
+                if ((mapPixels[y*cubicmap.width + x].r == 0) &&       // Collision: white pixel, only check R channel
                     (CheckCollisionCircleRec(playerPos, playerRadius,
                     (Rectangle){ mapPosition.x - 0.5f + x*1.0f, mapPosition.z - 0.5f + y*1.0f, 1.0f, 1.0f })))
                 {
@@ -107,6 +122,8 @@ int main(void)
             // DrawRectangle(GetScreenWidth() - cubicmap.width*4 - 20 + playerCellX*4, 20 + playerCellY*4, 4, 4, RED);
 
             DrawText(TextFormat("TIME: %.02f", (float)framesCounter/60), 800, 50, 50, BLUE);
+            DrawTexturePro(Personnage, sourceRec, targetRec, origin, WHITE);
+
 
 
             // DrawFPS(10, 10);
@@ -123,6 +140,7 @@ int main(void)
 
     UnloadTexture(cubicmap);        // Unload cubicmap texture
     UnloadTexture(texture);         // Unload map texture
+    UnloadTexture(Personnage); // Unload personnage texture)
     UnloadModel(model);             // Unload map model
 
     CloseWindow();                  // Close window and OpenGL context
@@ -130,4 +148,3 @@ int main(void)
 
     return 0;
 }
-
