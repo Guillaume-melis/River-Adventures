@@ -5,17 +5,23 @@
 #include <unistd.h> // Required for: free()
 #include <iostream> 
 #include <cstdio>
+#include <string>
+#include <conio.h>
 using namespace std;
 
 //------------------------------------------------------------------------------------
 // Program main entry point
 //------------------------------------------------------------------------------------
+
+
+
 int main(void)
 {
     
     const int screenWidth = 1920;
     const int screenHeight = 1080;
     static int framesCounter = 0;
+    // menu();
 
     framesCounter = 0;
 
@@ -24,32 +30,39 @@ int main(void)
     
     Camera camera = { { 0.2f, 0.4f, 0.2f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, 45.0f, 0 };
 
-    Image imMap = LoadImage("mini_laby.png");      
+    Image imMap = LoadImage("Map_inverse.png");      
     Texture2D cubicmap = LoadTextureFromImage(imMap);       
     Mesh mesh = GenMeshCubicmap(imMap, (Vector3){ 1.0f, 1.0f, 1.0f });
     Model model = LoadModelFromMesh(mesh);
 
     
-    Texture2D texture = LoadTexture("texture_murs.png");    
+    Texture2D texture = LoadTexture("Texture.png");    
     model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;             
+
+    Texture2D perso = LoadTexture("main_boussole.png");
+
+    int frameWidth = perso.width;
+    int frameHeight = perso.height;
+
+    // Source rectangle (part of the texture to use for drawing)
+    Rectangle sourceRec = { 0, 0, frameWidth, (float)perso.height };
+
+    // Destination rectangle (screen rectangle where drawing part of texture)
+    Rectangle destRec = { screenWidth/2.0f, screenHeight/2.0f, frameWidth*2.0f, frameHeight*2.0f };
+
+    // Origin of the texture (rotation/scale point), it's relative to destination rectangle size
+    // Vector2 origin = { (float)frameWidth, (float)frameHeight };
+
+    int rotation = 0;
+
+
+        
 
     
     Color *mapPixels = LoadImageColors(imMap);
     UnloadImage(imMap);             
 
-    Texture2D Personnage = LoadTexture("main_boussole.png"); 
-
-    // int *frameWidth = Personnage.width/6;
-    // int *frameHeight = Personnage.height;
-
     
-    // Rectangle sourceRect = Rectangle(0.0f, 0.0f, frameWidth, frameHeight);  
-
-    
-    // Rectangle targetRect = { screenWidth/2.0f, screenHeight/2.0f, *frameWidth * 2.0f, *frameHeight * 2.0f };
-
-    // Vector2 origin = { (float)*frameWidth, (float)*frameHeight };
-
 
 
     Vector3 mapPosition = { -cubicmap.width/2 -3 , 0.0f, -cubicmap.height/2  };  
@@ -58,7 +71,6 @@ int main(void)
     SetTargetFPS(60);               
 
     // Main game loop
-    // float rotation;
     
     while (!WindowShouldClose())    
     {
@@ -67,7 +79,7 @@ int main(void)
 
         UpdateCamera(&camera);
 
-        // rotation = 0.0f;
+        
         framesCounter++;
 
         
@@ -90,7 +102,7 @@ int main(void)
         {
             for (int x = 0; x < cubicmap.width; x++)
             {
-                if ((mapPixels[y*cubicmap.width + x].r == 0) &&       
+                if ((mapPixels[y*cubicmap.width + x].r == 255) &&       
                     (CheckCollisionCircleRec(playerPos, playerRadius,
                     (Rectangle){ mapPosition.x - 0.5f + x*1.0f, mapPosition.z - 0.5f + y*1.0f, 1.0f, 1.0f })))
                 {
@@ -100,21 +112,24 @@ int main(void)
             }
         }
 
-        if (playerCellX >50 , playerCellY <=50 ){
+        if (playerCellX > 50.0f  && playerCellY <= 50.0f ){
+            ClearBackground(RAYWHITE);
             BeginDrawing();
             DrawText(TextFormat("PLAYERPOS Y: %.02f", (float)playerCellY), 100, 30, 50, RED); 
             DrawText(TextFormat("PLAYERPOS X: %.02f", (float)playerCellX), 100, 100, 50, RED); 
         }
-        else if (40>playerCellX >20 , 80> playerCellY >60 ){
+        if (40.0f > playerCellX > 20.0f && 80.0f > playerCellY > 60.0f ){
+            ClearBackground(RAYWHITE);
             BeginDrawing();
             DrawText(TextFormat("PLAYERPOS Y: %.02f", (float)playerCellY), 100, 30, 50, ORANGE); 
             DrawText(TextFormat("PLAYERPOS X: %.02f", (float)playerCellX), 100, 100, 50, ORANGE); 
             EndDrawing();
         }
-        else if (playerCellX <20, 100>playerCellY >85 ){
+        if (playerCellX < 20.0f && 100.0f >playerCellY > 85.0f ){
+            ClearBackground(RAYWHITE);
             BeginDrawing();
             DrawText(TextFormat("PLAYERPOS Y: %.02f", (float)playerCellY), 100, 30, 50, GREEN); 
-            DrawText(TextFormat("PLAYERPOS X: %.02f", (float)playerCellX), 100, 100, 50, GREEN); //Les deux autres du haut + ça, ça marche pas 
+            DrawText(TextFormat("PLAYERPOS X: %.02f", (float)playerCellX), 100, 100, 50, GREEN); //Les deux autres du haut non + ça marche pas 
             EndDrawing();
         }
 
@@ -122,43 +137,40 @@ int main(void)
 
         float Temps;
 
-        if (playerCellX == 17 , playerCellY == 98 ) {
+    
+        
+
+        if (playerCellX == 17 && playerCellY == 98 ) {
             Temps = (float)framesCounter / 60;
-            f = fopen ("Temps_Jeu.txt", "r+"); //ça marche pas 
-            fwrite (&Temps);
-            fclose(f);
+            // string Temps_string = to_string(Temps);
+            // string filename3("Temps_Jeu.txt");
+            // FILE *o_file = fopen(filename3.c_str(), "w+");
+
+            // if (o_file){
+                // fwrite(filename3.c_str(), 1, filename3.size(), o_file);
+                // cout << "Done Writing!" << endl;
+            // }
+
 
             BeginDrawing();
-             DrawText(TextFormat("WELL DONE, YOU FINISHED THE GAME !!"),500,500,50,BLUE);   
-             DrawText(TextFormat("YOUR TIME :%.02f", (float)framesCounter/60),500,50,BLUE);
+             DrawText(TextFormat("WELL DONE, YOU FINISHED THE GAME !!"),500,500,50,RED);   
+             DrawText(TextFormat("YOUR TIME :%.02f", (float)framesCounter/60),500, 500,50,RED);
+             WaitTime(5)
             
-            //  sleep(15);
-            EndDrawing();
-            UnloadImageColors(mapPixels);   // Unload color array
+            // sleep(15);
 
-            UnloadTexture(cubicmap);        // Unload cubicmap texture
-            UnloadTexture(texture);         // Unload map texture
-            UnloadTexture(Personnage); // Unload personnage texture)
-            UnloadModel(model);             // Unload map model
+
+            EndDrawing();
+            UnloadImageColors(mapPixels);   
+            UnloadTexture(cubicmap);        
+            UnloadTexture(texture);         
+            // UnloadTexture(Personnage);
+            UnloadModel(model);             
 
             CloseWindow();       
 
         }
-        // if (playerCellX == 88 , playerCellY ==46 ) {
-        //     BeginDrawing();
-        //      DrawText(TextFormat("WELL DONE, YOU FINISHED THE GAME !!"),500,500,50,ORANGE);
-        //      sleep(15);
-        //     EndDrawing();
-        //     UnloadImageColors(mapPixels);   // Unload color array
-
-        //     UnloadTexture(cubicmap);        // Unload cubicmap texture
-        //     UnloadTexture(texture);         // Unload map texture
-        //     UnloadTexture(Personnage); // Unload personnage texture)
-        //     UnloadModel(model);             // Unload map model
-
-        //     CloseWindow();       
-
-        // }
+        
         
         
         BeginDrawing();
@@ -169,11 +181,6 @@ int main(void)
                 DrawModel(model, mapPosition, 1.0f, WHITE);                     
             EndMode3D();
 
-            // DrawTextureEx(cubicmap, (Vector2){ GetScreenWidth() - cubicmap.width*4.0f - 20, 20.0f }, 0.0f, 4.0f, WHITE);
-            // DrawRectangleLines(GetScreenWidth() - cubicmap.width*4 - 20, 20, cubicmap.width*4, cubicmap.height*4, GREEN);
-
-            // Draw player position radar
-            // DrawRectangle(GetScreenWidth() - cubicmap.width*4 - 20 + playerCellX*4, 20 + playerCellY*4, 4, 4, RED);
 
             DrawText(TextFormat("TIME: %.02f", (float)framesCounter/60), 800, 50, 50, BLUE);
             DrawText(TextFormat("PLAYERPOS Y: %.02f", (float)playerCellY), 100, 30, 50, RED); //3; 46
@@ -181,28 +188,32 @@ int main(void)
 
             
             // DrawTexturePro(Personnage, sourceRect, targetRect, float rotation ,origin, WHITE);
+            // DrawBillboard((Camera)camera,(Texture2D)perso, (Vector3)oldCamPos, 0.8, WHITE); //ça marche tjrs pas, jsp pk
+            DrawTextureRec(perso, sourceRec, Vector2{780,660},RAYWHITE); 
 
 
+
+            
 
             // DrawFPS(10, 10);
             
             
 
         EndDrawing();
-        //----------------------------------------------------------------------------------
+        
     }
 
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
+    
     UnloadImageColors(mapPixels);   // Unload color array
 
     UnloadTexture(cubicmap);        // Unload cubicmap texture
     UnloadTexture(texture);         // Unload map texture
-    UnloadTexture(Personnage); // Unload personnage texture)
+    UnloadTexture(perso); // Unload personnage texture)
     UnloadModel(model);             // Unload map model
 
     CloseWindow();                  // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
+    
 
     return 0;
 }
+
