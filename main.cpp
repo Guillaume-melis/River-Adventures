@@ -87,7 +87,7 @@ int main(void){
             ClearBackground(BLACK);
             BeginDrawing();
                 DrawTexturePro(Regles, Regle, Regle, Vector2Zero(),0, WHITE);
-                DrawText(TextFormat("Vous devez vous enfuir du labirynthe le plus rapidement"),220,600,50,RED);
+                DrawText(TextFormat("Vous devez vous enfuir le plus rapidement du labyrinthe"),220,600,50,RED);
                 DrawText(TextFormat("Pour cela vous devez utiliser les touches Z,Q,S,D"),320,700,50,RED);
                 DrawText(TextFormat("Si vous souhaitez un indice n'hésiter pas à appuyer sur la touche 'I'"),80,800,50,RED);
                 DrawText(TextFormat("Guillaume MELIS | Mateo PEREIRA | Dorian LUCAS"),50, 1020,30,RED);
